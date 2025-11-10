@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBoltBuilder } from '../../contexts/BoltBuilderContext';
 import { Button } from '../ui/Button';
 import ProgressBar from '../ui/ProgressBar';
+import { UserMenu } from '../auth/UserMenu';
 
 interface HeaderProps {
   onGeneratePrompt: () => void;
@@ -56,7 +57,9 @@ const Header: React.FC<HeaderProps> = ({ onGeneratePrompt, onToggleSidebar, onTo
         >
           <Monitor size={24} />
         </button>
-        
+
+        <UserMenu />
+
         <Button onClick={onGeneratePrompt}>
           Generate Prompt
         </Button>

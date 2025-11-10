@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { BoltBuilderProvider } from './contexts/BoltBuilderContext';
+import { AuthProvider } from './contexts/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import WelcomePage from './components/WelcomePage';
 import WizardLayout from './components/WizardLayout';
@@ -11,7 +12,8 @@ import { NetworkStatus } from './components/NetworkStatus';
 function App() {
   return (
     <ErrorBoundary>
-      <BoltBuilderProvider>
+      <AuthProvider>
+        <BoltBuilderProvider>
         {/* Skip navigation links for accessibility */}
         <SkipLink href="#main-content">Skip to main content</SkipLink>
         <div className="min-h-screen bg-black overflow-hidden">
@@ -32,7 +34,8 @@ function App() {
           {/* Network status indicator for mobile optimization */}
           <NetworkStatus />
         </div>
-      </BoltBuilderProvider>
+        </BoltBuilderProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }
