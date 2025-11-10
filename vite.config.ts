@@ -13,18 +13,9 @@ export default defineConfig({
       gzipSize: true,
       brotliSize: true,
     }),
-    // Gzip compression for better mobile performance
     compression({
       include: /\.(js|css|html|svg|json)$/,
-      threshold: 1024, // Only compress files larger than 1KB
-      deleteOriginFile: false,
-    }),
-    // Brotli compression for modern browsers
-    compression({
-      include: /\.(js|css|html|svg|json)$/,
-      algorithm: 'brotliCompress' as any,
       threshold: 1024,
-      deleteOriginFile: false,
     }),
   ],
   resolve: {
