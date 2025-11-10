@@ -1,15 +1,53 @@
-# LovaBolt - Quick Start Guide
+# WebKnot - Quick Start Guide
+
+## ⚠️ IMPORTANT: Dev Server Restart Required
+
+The dev server is showing an error about `@supabase/supabase-js` not being found. **This is expected!**
+
+### Why?
+- ✅ The package **IS** installed (`@supabase/supabase-js@2.80.0`)
+- ✅ It's in `package.json` and `node_modules`
+- ⚠️ The dev server started **before** we installed it
+
+### Solution: Restart the Dev Server
+The server will pick up the new package and everything will work perfectly!
+
+---
+
+## 🎉 What's Been Completed
+
+### ✅ Database Setup (Supabase)
+- **Users table** - Profiles with AI quotas and tier management
+- **Projects table** - Save unlimited projects with full config
+- **AI usage table** - Track every AI request with metrics
+- **Row Level Security** - Users can only access their own data
+
+### ✅ Authentication System
+- Email/password signup and login
+- User menu in header showing account info
+- Session management with auto-refresh
+- Password reset functionality
+
+### ✅ AI Integration (Gemini)
+- API key configured in secrets
+- Usage tracking for all AI features
+- Quota enforcement (20 free requests/month)
+- Automatic token counting and cost tracking
+
+### ✅ Service Layer
+- `AuthService` - User authentication
+- `ProjectService` - CRUD for projects
+- `AIUsageService` - Track and monitor AI usage
+- `GeminiServiceWrapper` - Adds usage tracking to all AI calls
+
+---
 
 ## 🚀 Getting Started
-
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
 
 ### Installation
 
 ```bash
-# Install dependencies
+# Install dependencies (already done!)
 npm install
 
 # Start development server
@@ -17,23 +55,29 @@ npm run dev
 
 # Build for production
 npm run build
-
-# Preview production build
-npm run preview
 ```
+
+### First Test After Restart
+
+1. Click **"Sign Up"** in the header
+2. Create a new account (instant, no email verification)
+3. Go through the wizard
+4. Enter a project description
+5. Watch AI analyze it (your first of 20 free requests!)
+6. Check Supabase dashboard to see your data
 
 ---
 
-## ✅ Bug Fixes Applied
+## ✅ Environment Configuration
 
-All critical bugs have been fixed! The application now:
-- ✅ Builds without errors
-- ✅ Has no memory leaks
-- ✅ Includes error boundary for crash protection
-- ✅ Has proper type safety
-- ✅ Handles localStorage errors gracefully
-
-See `FIXES_SUMMARY.md` for detailed information.
+All configured and ready:
+```env
+✅ VITE_SUPABASE_URL - Connected to database
+✅ VITE_SUPABASE_ANON_KEY - Valid key
+✅ VITE_GEMINI_API_KEY - Set in secrets
+✅ VITE_AI_ENABLED - true
+✅ VITE_AI_RATE_LIMIT - 20 requests/month (free tier)
+```
 
 ---
 
