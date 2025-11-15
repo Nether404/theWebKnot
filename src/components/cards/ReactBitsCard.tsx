@@ -61,7 +61,7 @@ const ReactBitsCardComponent: React.FC<ReactBitsCardProps> = ({
       <div className="relative p-6 flex flex-col h-full min-h-[200px]">
         {/* Preview based on category */}
         {showPreview && (
-          <div className="mb-4 -mx-6 -mt-6">
+          <div className="mb-4 -mx-6 -mt-6 h-40 overflow-hidden rounded-t-xl">
             {option.category === 'backgrounds' ? (
               <BackgroundPreview option={option} />
             ) : (
