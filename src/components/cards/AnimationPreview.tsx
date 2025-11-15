@@ -7,27 +7,6 @@ interface AnimationPreviewProps {
   option: ReactBitsComponent;
 }
 
-// Import CSS files for animations that need them (19 total)
-import '../../../react-bits/src/content/Animations/BlobCursor/BlobCursor.css';
-import '../../../react-bits/src/content/Animations/Cubes/Cubes.css';
-import '../../../react-bits/src/content/Animations/ElectricBorder/ElectricBorder.css';
-import '../../../react-bits/src/content/Animations/GhostCursor/GhostCursor.css';
-import '../../../react-bits/src/content/Animations/GlareHover/GlareHover.css';
-import '../../../react-bits/src/content/Animations/GradualBlur/GradualBlur.css';
-import '../../../react-bits/src/content/Animations/ImageTrail/ImageTrail.css';
-import '../../../react-bits/src/content/Animations/LaserFlow/LaserFlow.css';
-import '../../../react-bits/src/content/Animations/LogoLoop/LogoLoop.css';
-import '../../../react-bits/src/content/Animations/MagnetLines/MagnetLines.css';
-import '../../../react-bits/src/content/Animations/MetaBalls/MetaBalls.css';
-import '../../../react-bits/src/content/Animations/MetallicPaint/MetallicPaint.css';
-import '../../../react-bits/src/content/Animations/Noise/Noise.css';
-import '../../../react-bits/src/content/Animations/PixelTrail/PixelTrail.css';
-import '../../../react-bits/src/content/Animations/PixelTransition/PixelTransition.css';
-import '../../../react-bits/src/content/Animations/Ribbons/Ribbons.css';
-import '../../../react-bits/src/content/Animations/StarBorder/StarBorder.css';
-import '../../../react-bits/src/content/Animations/StickerPeel/StickerPeel.css';
-import '../../../react-bits/src/content/Animations/TargetCursor/TargetCursor.css';
-
 // Lazy load all animation components
 // @ts-ignore - React-bits components are JSX without type definitions
 const animationComponents: Record<string, React.LazyExoticComponent<any>> = {

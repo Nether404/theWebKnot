@@ -7,36 +7,6 @@ interface BackgroundPreviewProps {
   option: ReactBitsComponent;
 }
 
-// Import CSS files for backgrounds that need them
-import '../../../react-bits/src/content/Backgrounds/Aurora/Aurora.css';
-import '../../../react-bits/src/content/Backgrounds/Balatro/Balatro.css';
-import '../../../react-bits/src/content/Backgrounds/Beams/Beams.css';
-import '../../../react-bits/src/content/Backgrounds/ColorBends/ColorBends.css';
-import '../../../react-bits/src/content/Backgrounds/DarkVeil/DarkVeil.css';
-import '../../../react-bits/src/content/Backgrounds/Dither/Dither.css';
-import '../../../react-bits/src/content/Backgrounds/DotGrid/DotGrid.css';
-import '../../../react-bits/src/content/Backgrounds/FaultyTerminal/FaultyTerminal.css';
-import '../../../react-bits/src/content/Backgrounds/Galaxy/Galaxy.css';
-import '../../../react-bits/src/content/Backgrounds/GradientBlinds/GradientBlinds.css';
-import '../../../react-bits/src/content/Backgrounds/GridDistortion/GridDistortion.css';
-import '../../../react-bits/src/content/Backgrounds/GridMotion/GridMotion.css';
-import '../../../react-bits/src/content/Backgrounds/Hyperspeed/Hyperspeed.css';
-import '../../../react-bits/src/content/Backgrounds/Iridescence/Iridescence.css';
-import '../../../react-bits/src/content/Backgrounds/Lightning/Lightning.css';
-import '../../../react-bits/src/content/Backgrounds/LightRays/LightRays.css';
-import '../../../react-bits/src/content/Backgrounds/LiquidChrome/LiquidChrome.css';
-import '../../../react-bits/src/content/Backgrounds/LiquidEther/LiquidEther.css';
-import '../../../react-bits/src/content/Backgrounds/Orb/Orb.css';
-import '../../../react-bits/src/content/Backgrounds/Particles/Particles.css';
-import '../../../react-bits/src/content/Backgrounds/PixelBlast/PixelBlast.css';
-import '../../../react-bits/src/content/Backgrounds/Plasma/Plasma.css';
-import '../../../react-bits/src/content/Backgrounds/Prism/Prism.css';
-import '../../../react-bits/src/content/Backgrounds/PrismaticBurst/PrismaticBurst.css';
-import '../../../react-bits/src/content/Backgrounds/RippleGrid/RippleGrid.css';
-import '../../../react-bits/src/content/Backgrounds/Squares/Squares.css';
-import '../../../react-bits/src/content/Backgrounds/Threads/Threads.css';
-import '../../../react-bits/src/content/Backgrounds/Waves/Waves.css';
-
 // Helper to safely load background components
 const safeLoad = (importFn: () => Promise<any>, name: string) => {
   return lazy(() =>

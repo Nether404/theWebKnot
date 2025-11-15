@@ -7,41 +7,6 @@ interface ComponentPreviewProps {
   option: ReactBitsComponent;
 }
 
-// Import CSS files for components that need them (33 total)
-import '../../../react-bits/src/content/Components/AnimatedList/AnimatedList.css';
-import '../../../react-bits/src/content/Components/BounceCards/BounceCards.css';
-import '../../../react-bits/src/content/Components/BubbleMenu/BubbleMenu.css';
-import '../../../react-bits/src/content/Components/CardNav/CardNav.css';
-import '../../../react-bits/src/content/Components/CardSwap/CardSwap.css';
-import '../../../react-bits/src/content/Components/Carousel/Carousel.css';
-import '../../../react-bits/src/content/Components/ChromaGrid/ChromaGrid.css';
-import '../../../react-bits/src/content/Components/CircularGallery/CircularGallery.css';
-import '../../../react-bits/src/content/Components/Counter/Counter.css';
-import '../../../react-bits/src/content/Components/DecayCard/DecayCard.css';
-import '../../../react-bits/src/content/Components/Dock/Dock.css';
-import '../../../react-bits/src/content/Components/DomeGallery/DomeGallery.css';
-import '../../../react-bits/src/content/Components/ElasticSlider/ElasticSlider.css';
-import '../../../react-bits/src/content/Components/FlowingMenu/FlowingMenu.css';
-import '../../../react-bits/src/content/Components/FlyingPosters/FlyingPosters.css';
-import '../../../react-bits/src/content/Components/Folder/Folder.css';
-import '../../../react-bits/src/content/Components/GlassIcons/GlassIcons.css';
-import '../../../react-bits/src/content/Components/GlassSurface/GlassSurface.css';
-import '../../../react-bits/src/content/Components/GooeyNav/GooeyNav.css';
-import '../../../react-bits/src/content/Components/InfiniteMenu/InfiniteMenu.css';
-import '../../../react-bits/src/content/Components/InfiniteScroll/InfiniteScroll.css';
-import '../../../react-bits/src/content/Components/Lanyard/Lanyard.css';
-import '../../../react-bits/src/content/Components/MagicBento/MagicBento.css';
-import '../../../react-bits/src/content/Components/Masonry/Masonry.css';
-import '../../../react-bits/src/content/Components/PillNav/PillNav.css';
-import '../../../react-bits/src/content/Components/PixelCard/PixelCard.css';
-import '../../../react-bits/src/content/Components/ProfileCard/ProfileCard.css';
-import '../../../react-bits/src/content/Components/ScrollStack/ScrollStack.css';
-import '../../../react-bits/src/content/Components/SpotlightCard/SpotlightCard.css';
-import '../../../react-bits/src/content/Components/Stack/Stack.css';
-import '../../../react-bits/src/content/Components/StaggeredMenu/StaggeredMenu.css';
-import '../../../react-bits/src/content/Components/Stepper/Stepper.css';
-import '../../../react-bits/src/content/Components/TiltedCard/TiltedCard.css';
-
 // Lazy load all component components
 // @ts-ignore - React-bits components are JSX without type definitions
 const componentComponents: Record<string, React.LazyExoticComponent<any>> = {
