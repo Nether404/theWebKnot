@@ -73,9 +73,7 @@ const WelcomePage: React.FC = () => {
           <em>Tying things together</em>
         </p>
         <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-          Create comprehensive website design prompts for AI development tools like
-          <span className="text-blue-400 font-semibold"> Bolt.new</span> and
-          <span className="text-purple-400 font-semibold"> WebKnot.ai</span>
+          Create comprehensive website design prompts for AI development tools
         </p>
       </div>
 
