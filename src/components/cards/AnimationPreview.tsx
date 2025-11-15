@@ -1,121 +1,15 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState, Suspense, lazy } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ReactBitsComponent } from '../../types';
 
 interface AnimationPreviewProps {
   option: ReactBitsComponent;
 }
 
-// Lazy load all animation components
-// @ts-ignore - React-bits components are JSX without type definitions
-const animationComponents: Record<string, React.LazyExoticComponent<any>> = {
-  // @ts-ignore
-  'animated-content': lazy(
-    () => import('../../../react-bits/src/content/Animations/AnimatedContent/AnimatedContent')
-  ),
-  // @ts-ignore
-  'blob-cursor': lazy(
-    () => import('../../../react-bits/src/content/Animations/BlobCursor/BlobCursor')
-  ),
-  // @ts-ignore
-  'click-spark': lazy(
-    () => import('../../../react-bits/src/content/Animations/ClickSpark/ClickSpark')
-  ),
-  // @ts-ignore
-  crosshair: lazy(() => import('../../../react-bits/src/content/Animations/Crosshair/Crosshair')),
-  // @ts-ignore
-  cubes: lazy(() => import('../../../react-bits/src/content/Animations/Cubes/Cubes')),
-  // @ts-ignore
-  'electric-border': lazy(
-    () => import('../../../react-bits/src/content/Animations/ElectricBorder/ElectricBorder')
-  ),
-  // @ts-ignore
-  'fade-content': lazy(
-    () => import('../../../react-bits/src/content/Animations/FadeContent/FadeContent')
-  ),
-  // @ts-ignore
-  'ghost-cursor': lazy(
-    () => import('../../../react-bits/src/content/Animations/GhostCursor/GhostCursor')
-  ),
-  // @ts-ignore
-  'glare-hover': lazy(
-    () => import('../../../react-bits/src/content/Animations/GlareHover/GlareHover')
-  ),
-  // @ts-ignore
-  'gradual-blur': lazy(
-    () => import('../../../react-bits/src/content/Animations/GradualBlur/GradualBlur')
-  ),
-  // @ts-ignore
-  'image-trail': lazy(
-    () => import('../../../react-bits/src/content/Animations/ImageTrail/ImageTrail')
-  ),
-  // @ts-ignore
-  'laser-flow': lazy(
-    () => import('../../../react-bits/src/content/Animations/LaserFlow/LaserFlow')
-  ),
-  // @ts-ignore
-  'logo-loop': lazy(() => import('../../../react-bits/src/content/Animations/LogoLoop/LogoLoop')),
-  // @ts-ignore
-  magnet: lazy(() => import('../../../react-bits/src/content/Animations/Magnet/Magnet')),
-  // @ts-ignore
-  'magnet-lines': lazy(
-    () => import('../../../react-bits/src/content/Animations/MagnetLines/MagnetLines')
-  ),
-  // @ts-ignore
-  'meta-balls': lazy(
-    () => import('../../../react-bits/src/content/Animations/MetaBalls/MetaBalls')
-  ),
-  // @ts-ignore
-  'metallic-paint': lazy(
-    () => import('../../../react-bits/src/content/Animations/MetallicPaint/MetallicPaint')
-  ),
-  // @ts-ignore
-  noise: lazy(() => import('../../../react-bits/src/content/Animations/Noise/Noise')),
-  // @ts-ignore
-  'pixel-trail': lazy(
-    () => import('../../../react-bits/src/content/Animations/PixelTrail/PixelTrail')
-  ),
-  // @ts-ignore
-  'pixel-transition': lazy(
-    () => import('../../../react-bits/src/content/Animations/PixelTransition/PixelTransition')
-  ),
-  // @ts-ignore
-  ribbons: lazy(() => import('../../../react-bits/src/content/Animations/Ribbons/Ribbons')),
-  // @ts-ignore
-  'shape-blur': lazy(
-    () => import('../../../react-bits/src/content/Animations/ShapeBlur/ShapeBlur')
-  ),
-  // @ts-ignore
-  'splash-cursor': lazy(
-    () => import('../../../react-bits/src/content/Animations/SplashCursor/SplashCursor')
-  ),
-  // @ts-ignore
-  'star-border': lazy(
-    () => import('../../../react-bits/src/content/Animations/StarBorder/StarBorder')
-  ),
-  // @ts-ignore
-  'sticker-peel': lazy(
-    () => import('../../../react-bits/src/content/Animations/StickerPeel/StickerPeel')
-  ),
-  // @ts-ignore
-  'target-cursor': lazy(
-    () => import('../../../react-bits/src/content/Animations/TargetCursor/TargetCursor')
-  ),
-};
-
-// Default props for each animation (optimized for small preview)
-const defaultProps: Record<string, any> = {
-  // Add specific props if needed
-};
-
-/**
- * AnimationPreview renders a live animated preview of a react-bits animation component.
- * Uses Intersection Observer to only render when visible for performance.
- */
 export const AnimationPreview: React.FC<AnimationPreviewProps> = ({ option }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -126,7 +20,7 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({ option }) =>
       },
       {
         threshold: 0.1,
-        rootMargin: '50px', // Start loading slightly before visible
+        rootMargin: '50px',
       }
     );
 
@@ -139,16 +33,37 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({ option }) =>
     };
   }, []);
 
-  const AnimationComponent = animationComponents[option.id];
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isVisible) {
+        const timer = setTimeout(() => {
+          videoRef.current?.play().catch((error) => {
+            console.log('Autoplay prevented:', error);
+          });
+        }, 100);
+        return () => clearTimeout(timer);
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isVisible]);
 
-  // Type guard to ensure component is defined before rendering
-  if (!AnimationComponent) {
-    return (
-      <div
-        ref={containerRef}
-        className="w-full h-40 rounded-lg overflow-hidden bg-gray-900 relative"
-        aria-label={`Preview of ${option.title} animation`}
-      >
+  const videoName = option.id.replace(/-/g, '').toLowerCase();
+  const webmUrl = `/videos/${videoName}.webm`;
+  const mp4Url = `/videos/${videoName}.mp4`;
+
+  const handleError = () => {
+    console.error(`Video failed to load: ${videoName}`);
+    setHasError(true);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-full relative"
+      aria-label={`Preview of ${option.title}`}
+    >
+      {hasError || (!webmUrl && !mp4Url) ? (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
           <div className="text-center p-4">
             <svg
@@ -161,36 +76,31 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({ option }) =>
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
               />
             </svg>
             <div className="text-gray-500 text-xs">Preview not available</div>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      className="w-full h-40 rounded-lg overflow-hidden bg-gray-900 relative"
-      aria-label={`Preview of ${option.title} animation`}
-    >
-      {isVisible ? (
-        <Suspense
-          fallback={
-            <div className="w-full h-full flex items-center justify-center bg-gray-800">
-              <div className="animate-pulse text-gray-400 text-sm">Loading preview...</div>
-            </div>
-          }
+      ) : isVisible ? (
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover"
+          loop
+          muted
+          playsInline
+          autoPlay
+          onError={handleError}
+          onLoadedData={() => {
+            videoRef.current?.play().catch(() => {
+              // Autoplay might be blocked
+            });
+          }}
         >
-          <div className="w-full h-full relative flex items-center justify-center p-4">
-            <AnimationComponent {...(defaultProps[option.id] || {})} />
-            {/* Overlay to prevent interaction */}
-            <div className="absolute inset-0 pointer-events-none" />
-          </div>
-        </Suspense>
+          {webmUrl && <source src={webmUrl} type="video/webm" />}
+          {mp4Url && <source src={mp4Url} type="video/mp4" />}
+          Your browser does not support the video tag.
+        </video>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gray-800">
           <div className="text-gray-500 text-sm">Scroll to load</div>

@@ -1,147 +1,15 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState, Suspense, lazy } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ReactBitsComponent } from '../../types';
 
 interface ComponentPreviewProps {
   option: ReactBitsComponent;
 }
 
-// Lazy load all component components
-// @ts-ignore - React-bits components are JSX without type definitions
-const componentComponents: Record<string, React.LazyExoticComponent<any>> = {
-  // @ts-ignore
-  'animated-list': lazy(
-    () => import('../../../react-bits/src/content/Components/AnimatedList/AnimatedList')
-  ),
-  // @ts-ignore
-  'bounce-cards': lazy(
-    () => import('../../../react-bits/src/content/Components/BounceCards/BounceCards')
-  ),
-  // @ts-ignore
-  'bubble-menu': lazy(
-    () => import('../../../react-bits/src/content/Components/BubbleMenu/BubbleMenu')
-  ),
-  // @ts-ignore
-  'card-nav': lazy(() => import('../../../react-bits/src/content/Components/CardNav/CardNav')),
-  // @ts-ignore
-  'card-swap': lazy(() => import('../../../react-bits/src/content/Components/CardSwap/CardSwap')),
-  // @ts-ignore
-  carousel: lazy(() => import('../../../react-bits/src/content/Components/Carousel/Carousel')),
-  // @ts-ignore
-  'chroma-grid': lazy(
-    () => import('../../../react-bits/src/content/Components/ChromaGrid/ChromaGrid')
-  ),
-  // @ts-ignore
-  'circular-gallery': lazy(
-    () => import('../../../react-bits/src/content/Components/CircularGallery/CircularGallery')
-  ),
-  // @ts-ignore
-  counter: lazy(() => import('../../../react-bits/src/content/Components/Counter/Counter')),
-  // @ts-ignore
-  'decay-card': lazy(
-    () => import('../../../react-bits/src/content/Components/DecayCard/DecayCard')
-  ),
-  // @ts-ignore
-  dock: lazy(() => import('../../../react-bits/src/content/Components/Dock/Dock')),
-  // @ts-ignore
-  'dome-gallery': lazy(
-    () => import('../../../react-bits/src/content/Components/DomeGallery/DomeGallery')
-  ),
-  // @ts-ignore
-  'elastic-slider': lazy(
-    () => import('../../../react-bits/src/content/Components/ElasticSlider/ElasticSlider')
-  ),
-  // @ts-ignore
-  'flowing-menu': lazy(
-    () => import('../../../react-bits/src/content/Components/FlowingMenu/FlowingMenu')
-  ),
-  // @ts-ignore
-  'fluid-glass': lazy(
-    () => import('../../../react-bits/src/content/Components/FluidGlass/FluidGlass')
-  ),
-  // @ts-ignore
-  'flying-posters': lazy(
-    () => import('../../../react-bits/src/content/Components/FlyingPosters/FlyingPosters')
-  ),
-  // @ts-ignore
-  folder: lazy(() => import('../../../react-bits/src/content/Components/Folder/Folder')),
-  // @ts-ignore
-  'glass-icons': lazy(
-    () => import('../../../react-bits/src/content/Components/GlassIcons/GlassIcons')
-  ),
-  // @ts-ignore
-  'glass-surface': lazy(
-    () => import('../../../react-bits/src/content/Components/GlassSurface/GlassSurface')
-  ),
-  // @ts-ignore
-  'gooey-nav': lazy(() => import('../../../react-bits/src/content/Components/GooeyNav/GooeyNav')),
-  // @ts-ignore
-  'infinite-menu': lazy(
-    () => import('../../../react-bits/src/content/Components/InfiniteMenu/InfiniteMenu')
-  ),
-  // @ts-ignore
-  'infinite-scroll': lazy(
-    () => import('../../../react-bits/src/content/Components/InfiniteScroll/InfiniteScroll')
-  ),
-  // @ts-ignore
-  lanyard: lazy(() => import('../../../react-bits/src/content/Components/Lanyard/Lanyard')),
-  // @ts-ignore
-  'magic-bento': lazy(
-    () => import('../../../react-bits/src/content/Components/MagicBento/MagicBento')
-  ),
-  // @ts-ignore
-  masonry: lazy(() => import('../../../react-bits/src/content/Components/Masonry/Masonry')),
-  // @ts-ignore
-  'model-viewer': lazy(
-    () => import('../../../react-bits/src/content/Components/ModelViewer/ModelViewer')
-  ),
-  // @ts-ignore
-  'pill-nav': lazy(() => import('../../../react-bits/src/content/Components/PillNav/PillNav')),
-  // @ts-ignore
-  'pixel-card': lazy(
-    () => import('../../../react-bits/src/content/Components/PixelCard/PixelCard')
-  ),
-  // @ts-ignore
-  'profile-card': lazy(
-    () => import('../../../react-bits/src/content/Components/ProfileCard/ProfileCard')
-  ),
-  // @ts-ignore
-  'scroll-stack': lazy(
-    () => import('../../../react-bits/src/content/Components/ScrollStack/ScrollStack')
-  ),
-  // @ts-ignore
-  'spotlight-card': lazy(
-    () => import('../../../react-bits/src/content/Components/SpotlightCard/SpotlightCard')
-  ),
-  // @ts-ignore
-  stack: lazy(() => import('../../../react-bits/src/content/Components/Stack/Stack')),
-  // @ts-ignore
-  'staggered-menu': lazy(
-    () => import('../../../react-bits/src/content/Components/StaggeredMenu/StaggeredMenu')
-  ),
-  // @ts-ignore
-  stepper: lazy(() => import('../../../react-bits/src/content/Components/Stepper/Stepper')),
-  // @ts-ignore
-  'tilted-card': lazy(
-    () => import('../../../react-bits/src/content/Components/TiltedCard/TiltedCard')
-  ),
-};
-
-// Default props for each component (optimized for small preview)
-const defaultProps: Record<string, any> = {
-  dock: { items: [] },
-  carousel: { items: [] },
-  // Add more as needed - most components work with defaults
-};
-
-/**
- * ComponentPreview renders a live animated preview of a react-bits UI component.
- * Uses Intersection Observer to only render when visible for performance.
- */
 export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ option }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -152,7 +20,7 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ option }) =>
       },
       {
         threshold: 0.1,
-        rootMargin: '50px', // Start loading slightly before visible
+        rootMargin: '50px',
       }
     );
 
@@ -165,16 +33,37 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ option }) =>
     };
   }, []);
 
-  const ComponentComponent = componentComponents[option.id];
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isVisible) {
+        const timer = setTimeout(() => {
+          videoRef.current?.play().catch((error) => {
+            console.log('Autoplay prevented:', error);
+          });
+        }, 100);
+        return () => clearTimeout(timer);
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isVisible]);
 
-  // Type guard to ensure component is defined before rendering
-  if (!ComponentComponent) {
-    return (
-      <div
-        ref={containerRef}
-        className="w-full h-40 rounded-lg overflow-hidden bg-gray-900 relative"
-        aria-label={`Preview of ${option.title} component`}
-      >
+  const videoName = option.id.replace(/-/g, '').toLowerCase();
+  const webmUrl = `/videos/${videoName}.webm`;
+  const mp4Url = `/videos/${videoName}.mp4`;
+
+  const handleError = () => {
+    console.error(`Video failed to load: ${videoName}`);
+    setHasError(true);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-full relative"
+      aria-label={`Preview of ${option.title}`}
+    >
+      {hasError || (!webmUrl && !mp4Url) ? (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
           <div className="text-center p-4">
             <svg
@@ -187,36 +76,31 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ option }) =>
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
               />
             </svg>
             <div className="text-gray-500 text-xs">Preview not available</div>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      className="w-full h-40 rounded-lg overflow-hidden bg-gray-900 relative"
-      aria-label={`Preview of ${option.title} component`}
-    >
-      {isVisible ? (
-        <Suspense
-          fallback={
-            <div className="w-full h-full flex items-center justify-center bg-gray-800">
-              <div className="animate-pulse text-gray-400 text-sm">Loading preview...</div>
-            </div>
-          }
+      ) : isVisible ? (
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover"
+          loop
+          muted
+          playsInline
+          autoPlay
+          onError={handleError}
+          onLoadedData={() => {
+            videoRef.current?.play().catch(() => {
+              // Autoplay might be blocked
+            });
+          }}
         >
-          <div className="w-full h-full relative flex items-center justify-center p-4">
-            <ComponentComponent {...(defaultProps[option.id] || {})} />
-            {/* Overlay to prevent interaction */}
-            <div className="absolute inset-0 pointer-events-none" />
-          </div>
-        </Suspense>
+          {webmUrl && <source src={webmUrl} type="video/webm" />}
+          {mp4Url && <source src={mp4Url} type="video/mp4" />}
+          Your browser does not support the video tag.
+        </video>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gray-800">
           <div className="text-gray-500 text-sm">Scroll to load</div>

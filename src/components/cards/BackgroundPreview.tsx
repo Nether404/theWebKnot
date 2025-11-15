@@ -1,218 +1,15 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState, Suspense, lazy } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ReactBitsComponent } from '../../types';
 
 interface BackgroundPreviewProps {
   option: ReactBitsComponent;
 }
 
-// Helper to safely load background components
-const safeLoad = (importFn: () => Promise<any>, name: string) => {
-  return lazy(() =>
-    importFn()
-      .then((module) => {
-        // Ensure we have a default export
-        if (!module.default) {
-          console.warn(`${name} has no default export`);
-          return { default: () => <div>No preview</div> };
-        }
-        return module;
-      })
-      .catch((err) => {
-        console.error(`Failed to load ${name}:`, err);
-        return { default: () => <div>Load error</div> };
-      })
-  );
-};
-
-// Lazy load all background components
-// @ts-ignore - React-bits components are JSX without type definitions
-const backgroundComponents: Record<string, React.LazyExoticComponent<any>> = {
-  // @ts-ignore
-  aurora: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Aurora/Aurora'),
-    'Aurora'
-  ),
-  // @ts-ignore
-  balatro: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Balatro/Balatro'),
-    'Balatro'
-  ),
-  // @ts-ignore
-  ballpit: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Ballpit/Ballpit'),
-    'Ballpit'
-  ),
-  // @ts-ignore
-  beams: safeLoad(() => import('../../../react-bits/src/content/Backgrounds/Beams/Beams'), 'Beams'),
-  // @ts-ignore
-  'color-bends': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/ColorBends/ColorBends'),
-    'ColorBends'
-  ),
-  // @ts-ignore
-  'dark-veil': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/DarkVeil/DarkVeil'),
-    'DarkVeil'
-  ),
-  // @ts-ignore
-  dither: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Dither/Dither'),
-    'Dither'
-  ),
-  // @ts-ignore
-  'dot-grid': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/DotGrid/DotGrid'),
-    'DotGrid'
-  ),
-  // @ts-ignore
-  'faulty-terminal': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/FaultyTerminal/FaultyTerminal'),
-    'FaultyTerminal'
-  ),
-  // @ts-ignore
-  galaxy: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Galaxy/Galaxy'),
-    'Galaxy'
-  ),
-  // @ts-ignore
-  'gradient-blinds': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/GradientBlinds/GradientBlinds'),
-    'GradientBlinds'
-  ),
-  // @ts-ignore
-  'grid-distortion': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/GridDistortion/GridDistortion'),
-    'GridDistortion'
-  ),
-  // @ts-ignore
-  'grid-motion': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/GridMotion/GridMotion'),
-    'GridMotion'
-  ),
-  // @ts-ignore
-  hyperspeed: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Hyperspeed/Hyperspeed'),
-    'Hyperspeed'
-  ),
-  // @ts-ignore
-  iridescence: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Iridescence/Iridescence'),
-    'Iridescence'
-  ),
-  // @ts-ignore
-  'letter-glitch': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/LetterGlitch/LetterGlitch'),
-    'LetterGlitch'
-  ),
-  // @ts-ignore
-  lightning: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Lightning/Lightning'),
-    'Lightning'
-  ),
-  // @ts-ignore
-  'light-rays': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/LightRays/LightRays'),
-    'LightRays'
-  ),
-  // @ts-ignore
-  'liquid-chrome': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/LiquidChrome/LiquidChrome'),
-    'LiquidChrome'
-  ),
-  // @ts-ignore
-  'liquid-ether': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/LiquidEther/LiquidEther'),
-    'LiquidEther'
-  ),
-  // @ts-ignore
-  orb: safeLoad(() => import('../../../react-bits/src/content/Backgrounds/Orb/Orb'), 'Orb'),
-  // @ts-ignore
-  particles: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Particles/Particles'),
-    'Particles'
-  ),
-  // @ts-ignore
-  'pixel-blast': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/PixelBlast/PixelBlast'),
-    'PixelBlast'
-  ),
-  // @ts-ignore
-  plasma: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Plasma/Plasma'),
-    'Plasma'
-  ),
-  // @ts-ignore
-  prism: safeLoad(() => import('../../../react-bits/src/content/Backgrounds/Prism/Prism'), 'Prism'),
-  // @ts-ignore
-  'prismatic-burst': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/PrismaticBurst/PrismaticBurst'),
-    'PrismaticBurst'
-  ),
-  // @ts-ignore
-  'ripple-grid': safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/RippleGrid/RippleGrid'),
-    'RippleGrid'
-  ),
-  // @ts-ignore
-  silk: safeLoad(() => import('../../../react-bits/src/content/Backgrounds/Silk/Silk'), 'Silk'),
-  // @ts-ignore
-  squares: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Squares/Squares'),
-    'Squares'
-  ),
-  // @ts-ignore
-  threads: safeLoad(
-    () => import('../../../react-bits/src/content/Backgrounds/Threads/Threads'),
-    'Threads'
-  ),
-  // @ts-ignore
-  waves: safeLoad(() => import('../../../react-bits/src/content/Backgrounds/Waves/Waves'), 'Waves'),
-};
-
-// Default props for each background (optimized for small preview)
-const defaultProps: Record<string, any> = {
-  aurora: { speed: 1, blend: 0.5, amplitude: 1.0 },
-  silk: { speed: 5, scale: 1, noiseIntensity: 1.5 },
-  // Add more as needed - most components work with defaults
-};
-
-/**
- * Error boundary for individual preview components
- */
-class PreviewErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props: any) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Preview error:', error, errorInfo);
-  }
-
-  override render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
-/**
- * BackgroundPreview renders a live animated preview of a react-bits background component.
- * Uses Intersection Observer to only render when visible for performance.
- */
 export const BackgroundPreview: React.FC<BackgroundPreviewProps> = ({ option }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -223,7 +20,7 @@ export const BackgroundPreview: React.FC<BackgroundPreviewProps> = ({ option }) 
       },
       {
         threshold: 0.1,
-        rootMargin: '50px', // Start loading slightly before visible
+        rootMargin: '50px',
       }
     );
 
@@ -236,16 +33,37 @@ export const BackgroundPreview: React.FC<BackgroundPreviewProps> = ({ option }) 
     };
   }, []);
 
-  const BackgroundComponent = backgroundComponents[option.id];
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isVisible) {
+        const timer = setTimeout(() => {
+          videoRef.current?.play().catch((error) => {
+            console.log('Autoplay prevented:', error);
+          });
+        }, 100);
+        return () => clearTimeout(timer);
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isVisible]);
 
-  // Type guard to ensure component is defined before rendering
-  if (!BackgroundComponent) {
-    return (
-      <div
-        ref={containerRef}
-        className="w-full h-40 rounded-lg overflow-hidden bg-gray-900 relative"
-        aria-label={`Preview of ${option.title} background`}
-      >
+  const videoName = option.id.replace(/-/g, '').toLowerCase();
+  const webmUrl = `/videos/${videoName}.webm`;
+  const mp4Url = `/videos/${videoName}.mp4`;
+
+  const handleError = () => {
+    console.error(`Video failed to load: ${videoName}`);
+    setHasError(true);
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-full relative"
+      aria-label={`Preview of ${option.title}`}
+    >
+      {hasError || (!webmUrl && !mp4Url) ? (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
           <div className="text-center p-4">
             <svg
@@ -258,59 +76,31 @@ export const BackgroundPreview: React.FC<BackgroundPreviewProps> = ({ option }) 
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
               />
             </svg>
             <div className="text-gray-500 text-xs">Preview not available</div>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  const errorFallback = (
-    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-red-900/20 to-gray-900">
-      <div className="text-center p-4">
-        <svg
-          className="w-10 h-10 mx-auto mb-2 text-red-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      ) : isVisible ? (
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover"
+          loop
+          muted
+          playsInline
+          autoPlay
+          onError={handleError}
+          onLoadedData={() => {
+            videoRef.current?.play().catch(() => {
+              // Autoplay might be blocked
+            });
+          }}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
-        <div className="text-red-400 text-xs">Preview error</div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div
-      ref={containerRef}
-      className="w-full h-40 rounded-lg overflow-hidden bg-gray-900 relative"
-      aria-label={`Preview of ${option.title} background`}
-    >
-      {isVisible ? (
-        <PreviewErrorBoundary fallback={errorFallback}>
-          <Suspense
-            fallback={
-              <div className="w-full h-full flex items-center justify-center bg-gray-800">
-                <div className="animate-pulse text-gray-400 text-sm">Loading preview...</div>
-              </div>
-            }
-          >
-            <div className="w-full h-full relative" style={{ isolation: 'isolate' }}>
-              <BackgroundComponent {...(defaultProps[option.id] || {})} />
-              {/* Overlay to prevent interaction */}
-              <div className="absolute inset-0 pointer-events-none bg-transparent" />
-            </div>
-          </Suspense>
-        </PreviewErrorBoundary>
+          {webmUrl && <source src={webmUrl} type="video/webm" />}
+          {mp4Url && <source src={mp4Url} type="video/mp4" />}
+          Your browser does not support the video tag.
+        </video>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gray-800">
           <div className="text-gray-500 text-sm">Scroll to load</div>
